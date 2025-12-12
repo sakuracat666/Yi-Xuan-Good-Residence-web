@@ -13,9 +13,9 @@ export const DEFAULT_PRIMARY = '#409EFF' // Element Plus 默认蓝色
 export const ROUTER_WHITE_LIST: string[] = ['/404']
 
 // * 高德地图 key
-export const AMAP_MAP_KEY = '5e8245ac445d7cd6d98b178ed42b5700'
+export const AMAP_MAP_KEY = '77896be313d0afe3696ff40148f4b62e'
 
-export const AMAP_MAP_SECRET_KEY = '2f047c7b569d899dbd1ab8ccd11c22ed'
+export const AMAP_MAP_SECRET_KEY = 'bf0e38ae1d4f4a7a8115acc4b5fbffd7'
 
 // 高德地图 安全密匙
 export const AMAP_MAP_SERVICE_HOST = 'http://www.gitlbo.top:8181/_AMapService'
