@@ -2,6 +2,12 @@
 
 基于 Vue 3 + TypeScript + Vite 4 + Element Plus + Pinia 构建的租房业务后台管理系统。
 
+# 前后端代码地址
+后端地址：https://gitee.com/huhao_666/cloud-apartment
+前端管理端地址：https://gitee.com/huhao_666/easy-to-choose-a-home---web
+前端用户端地址：https://gitee.com/huhao_666/easy-to-choose-apartment---h5
+
+
 ## 技术栈
 
 | 分类 | 技术 |
