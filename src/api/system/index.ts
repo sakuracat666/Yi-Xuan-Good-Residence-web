@@ -33,6 +33,7 @@ export function getSysUserList(params: SysUserListParams) {
     {
       name: params.name,
       phone: params.phone,
+      postId: params.postId,
     },
   )
 }

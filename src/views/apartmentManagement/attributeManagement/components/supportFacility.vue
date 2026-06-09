@@ -142,7 +142,7 @@ onMounted(() => {
     width: 50px;
   }
   span {
-    color: #f39c12; // 配套项文字颜色
+    color: var(--el-color-primary);
     font-size: 12px;
   }
 }

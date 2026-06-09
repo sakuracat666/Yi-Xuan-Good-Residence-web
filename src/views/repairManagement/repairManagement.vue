@@ -10,35 +10,35 @@
     >
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button 
-          type="primary" 
-          icon="View" 
+        <el-button
+          type="primary"
+          icon="View"
           size="small"
           @click="viewDetail(scope.row)"
         >
           查看详情
         </el-button>
-        <el-button 
-          type="success" 
-          icon="User" 
+        <el-button
+          type="success"
+          icon="User"
           size="small"
           @click="assignRepair(scope.row)"
           :disabled="scope.row.status === '3' || scope.row.status === '4'"
         >
           指派处理
         </el-button>
-        <el-button 
-          type="warning" 
-          icon="Plus" 
+        <el-button
+          type="warning"
+          icon="Plus"
           size="small"
           @click="addProgress(scope.row)"
           :disabled="scope.row.status === '3' || scope.row.status === '4'"
         >
           新增进度
         </el-button>
-        <el-button 
-          type="danger" 
-          icon="Close" 
+        <el-button
+          type="danger"
+          icon="Close"
           size="small"
           @click="cancelRepair(scope.row)"
           :disabled="scope.row.status === '3' || scope.row.status === '4'"

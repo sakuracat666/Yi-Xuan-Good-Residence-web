@@ -20,6 +20,7 @@ export interface ReqPage {
 export interface SysUserListParams extends ReqPage {
   name?: string
   phone?: number
+  postId?: number
 }
 export interface SysUserInterfaceRes {
   id?: number
