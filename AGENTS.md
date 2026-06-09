@@ -1,87 +1,87 @@
 # AGENTS.md
 
-This file provides guidance to Qoder (qoder.com) when working with code in this repository.
+本文件为 Qoder (qoder.com) 在此仓库中工作时提供指引。
 
-## Commands
+## 常用命令
 
 ```bash
-# Install dependencies
+# 安装依赖
 npm install
 
-# Start dev server (Vite, default port 5173, proxies /admin to backend)
+# 启动开发服务器（Vite，默认端口 5173，代理 /admin 到后端）
 npm run dev
 
-# Production build
+# 生产构建
 npm run build
 
-# Lint check / auto-fix
+# ESLint 检查 / 自动修复
 npm run lint
 npm run fix
 
-# Format all files with Prettier
+# Prettier 格式化所有文件
 npm run format
 
-# Lint + Stylelint fix
+# ESLint + Stylelint 联合修复
 npm run lint:eslint
 npm run lint:style
 ```
 
-No test framework is configured in this project.
+项目未配置测试框架。
 
-## Architecture
+## 项目架构
 
-**Vue 3 + TypeScript + Vite 4 + Element Plus + Pinia** — a rental housing admin panel.
+**Vue 3 + TypeScript + Vite 4 + Element Plus + Pinia** — 租房后台管理系统。
 
-### Request Layer (`src/utils/http/index.ts`)
+### 请求层（`src/utils/http/index.ts`）
 
-Axios is wrapped with generic typed methods (`http.get<T>()`, `http.post<T>()`, etc.) returning `Promise<ResultData<T>>`. Key behaviors:
-- Dev: `baseURL` is `/`, Vite proxies `/admin` prefix to `VITE_APP_BASE_URL` (defined in `.env.development`).
-- Prod: `baseURL` is the absolute `VITE_APP_BASE_URL` from `.env.production`.
-- Request interceptor injects `access-token` header from Pinia user store.
-- Response interceptor handles token expiry (redirect to login) and shows `ElMessage.error` for business errors.
+Axios 经二次封装，暴露泛型方法（`http.get<T>()`、`http.post<T>()` 等），返回 `Promise<ResultData<T>>`。核心行为：
+- 开发环境：`baseURL` 为 `/`，Vite 将 `/admin` 前缀请求代理到 `VITE_APP_BASE_URL`（定义在 `.env.development`）。
+- 生产环境：`baseURL` 直接使用 `.env.production` 中的绝对地址 `VITE_APP_BASE_URL`。
+- 请求拦截器自动从 Pinia user store 读取 token 并注入 `access-token` 请求头。
+- 响应拦截器统一处理：Token 失效时清除状态并跳转登录页；业务错误码通过 `ElMessage.error` 弹出提示。
 
-### API Module Convention (`src/api/`)
+### API 模块约定（`src/api/`）
 
-Each business module has its own directory with `index.ts` (request functions) and `types.ts` (interfaces). Example: `src/api/rentManagement/index.ts` + `types.ts`.
+每个业务模块独立目录，包含 `index.ts`（请求函数）和 `types.ts`（接口类型定义）。示例：`src/api/rentManagement/index.ts` + `types.ts`。
 
-### Routing (`src/router/`)
+### 路由（`src/router/`）
 
-- Hash mode router, all routes statically defined in `constantRoutes.ts`.
-- Route guard in `index.ts`: login page control → whitelist bypass → token check → redirect to login with `redirect` query param if unauthenticated.
-- Route `meta` fields: `isHide` (hide from sidebar), `activeMenu` (highlight parent on detail pages), `isFull`, `isAffix`, `isKeepAlive`.
+- Hash 模式路由，所有路由集中定义在 `constantRoutes.ts`。
+- 路由守卫逻辑（`index.ts`）：登录页访问控制 → 白名单放行 → Token 校验 → 无 Token 跳转登录页并携带 `redirect` 参数。
+- 路由 `meta` 字段说明：`isHide`（侧边栏隐藏）、`activeMenu`（详情页高亮父菜单）、`isFull`（全屏）、`isAffix`（固定 Tab）、`isKeepAlive`（缓存）。
 
-### State Management (`src/store/`)
+### 状态管理（`src/store/`）
 
-Pinia with `pinia-plugin-persistedstate`. Key stores:
-- `user.ts` — token, user info (persisted)
-- `settings.ts` — theme/layout settings
-- `tabsBar.ts` — tab navigation state
+Pinia + `pinia-plugin-persistedstate` 持久化插件。核心 store：
+- `user.ts` — Token、用户信息（持久化存储）
+- `settings.ts` — 主题与布局配置
+- `tabsBar.ts` — 页签导航状态
 
-### Global Components (`src/components/`)
+### 全局组件（`src/components/`）
 
-Registered globally in `main.ts` via plugin install pattern:
-- `ProTable` — config-driven table wrapper around `el-table` with built-in search form and pagination
-- `SearchForm` — standardized search form
-- `SvgIcon` — SVG sprite icon component (icons in `src/assets/icons/`)
-- `IconifyIcon` — Iconify icon component
-- `SwitchDark` — dark mode toggle
+在 `main.ts` 中通过插件安装模式全局注册：
+- `ProTable` — 基于 `el-table` 的配置化表格封装，内置搜索表单与分页
+- `SearchForm` — 统一搜索表单组件
+- `SvgIcon` — SVG 雪碧图图标组件（图标资源位于 `src/assets/icons/`）
+- `IconifyIcon` — Iconify 图标组件
+- `SwitchDark` — 暗黑模式切换组件
 
-### Styling
+### 样式
 
-- SCSS with global variables injected via `vite.config.ts` (`src/styles/variable.scss`).
-- Element Plus theme overrides in `src/styles/element.scss`.
-- Path alias: `@` → `src/`.
+- SCSS 预处理，全局变量通过 `vite.config.ts` 自动注入（`src/styles/variable.scss`）。
+- Element Plus 主题覆盖样式在 `src/styles/element.scss`。
+- 路径别名：`@` → `src/`。
 
-### Mock Data
+### Mock 数据
 
-`vite-plugin-mock` is active only in dev mode. Mock files live in the project root `mock/` directory. Mock and real API can coexist — differentiate by URL prefix.
+`vite-plugin-mock` 仅在开发环境启用，Mock 文件位于项目根目录 `mock/`。Mock 与真实接口可共存，通过 URL 前缀区分。
 
-### Environment Variables
+### 环境变量
 
-Files: `.env.development`, `.env.production`, `.env.test`. All custom vars must be prefixed with `VITE_` to be exposed. Key vars: `VITE_APP_BASE_URL`, `VITE_APP_TITLE`.
+配置文件：`.env.development`、`.env.production`、`.env.test`。自定义变量必须以 `VITE_` 为前缀才能在前端代码中访问。关键变量：`VITE_APP_BASE_URL`（后端地址）、`VITE_APP_TITLE`（页面标题）。
 
-## Backend API Docs
+## 后端接口文档
 
-Swagger documentation:
+Swagger 文档地址：
 - `http://139.198.163.91:8080/doc.html#/home`
 - `http://139.198.127.41:8080/doc.html#/home`
